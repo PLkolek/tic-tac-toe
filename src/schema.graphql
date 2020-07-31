@@ -5,6 +5,7 @@ type Query {
 type Mutation {
     createGame(input: CreateGameInput!): GamePayload!
     joinGame(input: JoinGameInput!): GamePayload!
+    makeMove(input: MakeMoveInput!): GamePayload!
     signUp(input: SignUpInput!): AuthPayload!
     login(input: LogInInput): AuthPayload!
 }
@@ -16,6 +17,17 @@ input CreateGameInput {
 input JoinGameInput {
     gameId: String!
 }
+
+input MakeMoveInput {
+    gameId: String!
+    coordinates: CoordinatesInput!
+}
+
+input CoordinatesInput {
+    x: Int!
+    y: Int!
+}
+
 
 type GamePayload {
     game: Game
@@ -31,11 +43,24 @@ type Game {
     name: String!
     type: GameType!
     players: [User!]!
+    moves: [Coordinates!]!
+    board: [[FieldState!]!]!
 }
 
 enum GameType {
     SINGLEPLAYER
     MULTIPLAYER
+}
+
+type Coordinates {
+    x: Int!
+    y: Int!
+}
+
+enum FieldState {
+    X
+    O
+    _
 }
 
 input SignUpInput {

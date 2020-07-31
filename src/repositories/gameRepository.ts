@@ -5,7 +5,7 @@ export class GameRepository {
     private nextId: number = 1;
 
     public create(game: Game): Saved<Game> {
-        const savedGame = { ...game, id: String(this.nextId++) }
+        const savedGame = { ...game, id: String(this.nextId++) };
         this.games.push(savedGame);
         return savedGame;
     }
@@ -14,16 +14,18 @@ export class GameRepository {
         return this.games;
     }
 
-    update(game: Saved<Game>) {
-        const gameIndex = this.games.findIndex(this.byId(game.id))
+    public update(game: Saved<Game>): Saved<Game> {
+        const gameIndex = this.games.findIndex(this.byId(game.id));
         if (gameIndex != -1) {
             this.games[gameIndex] = game;
         } else {
+            //TODO: fail here
             this.games.push(game);
         }
+        return game
     }
 
-    get(gameId: string): Saved<Game> | undefined {
+    public get(gameId: string): Saved<Game> | undefined {
         return this.games.find(this.byId(gameId));
     }
 
