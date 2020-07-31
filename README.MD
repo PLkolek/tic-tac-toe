@@ -7,5 +7,6 @@ TODO:
 * type mutations nicely in resolvers
 * naming convention for resolver files
 * split model
+* prettier
 
 https://www.apollographql.com/blog/designing-graphql-mutations-e09de826ed97/

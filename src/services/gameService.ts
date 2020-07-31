@@ -1,6 +1,7 @@
-import { areCoordinatesEqual, AuthUser, BoardCoordinates, Game, GameData, GameResult, GameType, getGameResult, Saved } from "../model";
+import { areCoordinatesEqual, AuthUser, BoardCoordinates, Game, GameData, GameResult, GameType, getBoard, getGameResult, Saved } from "../model";
 import { GameRepository } from "../repositories/gameRepository";
 import { AuthorizationError, BadRequestError } from "../utils";
+import * as AI from "./gameAi"
 
 export class GameService {
     private gameRepository: GameRepository;
@@ -67,6 +68,12 @@ export class GameService {
         }
 
         const updatedGame = { ...game, moves: [...game.moves, coordinates] };
+        const gameResultAfterMove = getGameResult(updatedGame.moves);
+        if(game.type === GameType.SinglePlayer && gameResultAfterMove === GameResult.InProgress) {
+            const aiMove = AI.makeMove(getBoard(updatedGame.moves));
+            updatedGame.moves.push(aiMove)
+        }
+
         return this.gameRepository.update(updatedGame);
     }
 
