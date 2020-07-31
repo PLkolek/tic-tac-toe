@@ -2,13 +2,16 @@ import { areCoordinatesEqual, AuthUser, BoardCoordinates, Game, GameData, GameRe
 import { GameRepository } from "../repositories/gameRepository";
 import { AuthorizationError, BadRequestError } from "../utils";
 import * as AI from "./gameAi"
+import { PubSub } from "graphql-yoga";
 
 export class GameService {
     private gameRepository: GameRepository;
+    private pubsub: PubSub;
     private loggedInUser: AuthUser | undefined;
 
-    constructor(gameRepository: GameRepository, loggedInUser: AuthUser | undefined) {
+    constructor(gameRepository: GameRepository, pubsub: PubSub, loggedInUser: AuthUser | undefined) {
         this.gameRepository = gameRepository;
+        this.pubsub = pubsub;
         this.loggedInUser = loggedInUser;
     }
 
@@ -52,6 +55,7 @@ export class GameService {
     }
 
     public makeMove(game: Saved<Game>, userId: string, coordinates: BoardCoordinates): Saved<Game> {
+        //TODO: extract, split
         const playerNumber = game.playerIds.indexOf(userId);
         if (playerNumber == -1) {
             throw new BadRequestError(`Player ${userId} is not a member of game ${game.name}. Please join game before making moves.`)
@@ -69,12 +73,17 @@ export class GameService {
 
         const updatedGame = { ...game, moves: [...game.moves, coordinates] };
         const gameResultAfterMove = getGameResult(updatedGame.moves);
-        if(game.type === GameType.SinglePlayer && gameResultAfterMove === GameResult.InProgress) {
-            const aiMove = AI.makeMove(getBoard(updatedGame.moves));
+        if (game.type === GameType.SinglePlayer && gameResultAfterMove === GameResult.InProgress) {
+            const aiMove = AI.makeMove(getBoard(updatedGame.moves)); //TODO: shorten this
             updatedGame.moves.push(aiMove)
         }
+        const finalGame = this.gameRepository.update(updatedGame);
+        const finalResult = getGameResult(finalGame.moves);
+        if (finalResult !== GameResult.InProgress) {
+            this.pubsub.publish("GameEnded", finalGame);
+        }
 
-        return this.gameRepository.update(updatedGame);
+        return finalGame;
     }
 
     private getGameOrFail(gameId: string): Saved<Game> {

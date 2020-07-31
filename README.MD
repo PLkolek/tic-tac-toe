@@ -10,5 +10,13 @@ TODO:
 * prettier
 * resolve TODOs in code
 * unit tests
+* logging
+* DI
+* type vs interface
+* _ vs names
+* organize Input and Output types
+
+Subscriptions are not authenticated
+Models are passed in pubsub
 
 https://www.apollographql.com/blog/designing-graphql-mutations-e09de826ed97/

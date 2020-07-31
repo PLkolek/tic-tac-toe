@@ -1,5 +1,5 @@
-import { BadRequestError, Context, MutationInput } from '../../utils'
-import { ApiCoordinates, BoardCoordinate, boardCoordinates, Game, GameData, Saved } from "../../model";
+import { BadRequestError, Context, GameOutput, MutationInput } from '../../utils'
+import { ApiCoordinates, BoardCoordinate, boardCoordinates,  GameData } from "../../model";
 
 type CreateGameInput = {
     game: GameData
@@ -12,10 +12,6 @@ type JoinGameInput = {
 type MakeMoveInput = {
     gameId: string
     coordinates: ApiCoordinates
-}
-
-type GameOutput = {
-    game: Saved<Game>
 }
 
 export const game = {

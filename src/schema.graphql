@@ -10,6 +10,10 @@ type Mutation {
     login(input: LogInInput): AuthPayload!
 }
 
+type Subscription {
+    gameEnded: GamePayload
+}
+
 input CreateGameInput {
     game: GameInput!
 }
@@ -89,10 +93,6 @@ input PasswordAuthInput {
     password: String!
 }
 
-#type Subscription {
-#    feedSubscription: Post
-#}
-
 type AuthPayload {
     token: String
     user: User
@@ -102,11 +102,3 @@ type User {
     id: ID!
     email: String!
 }
-
-#type Post {
-#    id: ID!
-#    published: Boolean!
-#    title: String!
-#    content: String!
-#    author: User!
-#}
