@@ -43,6 +43,7 @@ type Game {
     name: String!
     type: GameType!
     players: [User!]!
+    result: GameResult
     moves: [Coordinates!]!
     board: [[FieldState!]!]!
 }
@@ -61,6 +62,13 @@ enum FieldState {
     X
     O
     _
+}
+
+enum GameResult {
+    PLAYER_1_WON
+    PLAYER_2_WON
+    DRAW
+    IN_PROGRESS
 }
 
 input SignUpInput {

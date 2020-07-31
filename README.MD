@@ -8,5 +8,7 @@ TODO:
 * naming convention for resolver files
 * split model
 * prettier
+* resolve TODOs in code
+* unit tests
 
 https://www.apollographql.com/blog/designing-graphql-mutations-e09de826ed97/

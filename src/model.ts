@@ -75,10 +75,10 @@ export const getEmptyFields = (board: Board): BoardCoordinates[] =>
     allBoardFields.filter(([x, y]) => board[y][x] === "_"); //TODO: extract const for "_"
 
 export enum GameResult {
-    Player1Won = "Player1Won",
-    Player2Won = "Player2Won",
-    Draw = "Draw",
-    InProgress = "InProgress"
+    Player1Won = "PLAYER_1_WON",
+    Player2Won = "PLAYER_2_WON",
+    Draw = "DRAW",
+    InProgress = "IN_PROGRESS"
 }
 
 export const getGameResult = (moves: BoardCoordinates[]): GameResult => {
