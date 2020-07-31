@@ -1,0 +1,79 @@
+type Query {
+    games: [Game!]!
+}
+
+type Mutation {
+    createGame(input: CreateGameInput!): GamePayload!
+    joinGame(input: JoinGameInput!): GamePayload!
+    signUp(input: SignUpInput!): AuthPayload!
+    login(input: LogInInput): AuthPayload!
+}
+
+input CreateGameInput {
+    game: GameInput!
+}
+
+input JoinGameInput {
+    gameId: String!
+}
+
+type GamePayload {
+    game: Game
+}
+
+input GameInput {
+    name: String!
+    type: GameType!
+}
+
+type Game {
+    id: ID!
+    name: String!
+    type: GameType!
+    players: [User!]!
+}
+
+enum GameType {
+    SINGLEPLAYER
+    MULTIPLAYER
+}
+
+input SignUpInput {
+    user: UserInput!
+}
+
+input UserInput {
+    email: String!
+    password: String!
+}
+
+input LogInInput {
+    passwordAuth: PasswordAuthInput!
+}
+
+input PasswordAuthInput {
+    email: String!
+    password: String!
+}
+
+#type Subscription {
+#    feedSubscription: Post
+#}
+
+type AuthPayload {
+    token: String
+    user: User
+}
+
+type User {
+    id: ID!
+    email: String!
+}
+
+#type Post {
+#    id: ID!
+#    published: Boolean!
+#    title: String!
+#    content: String!
+#    author: User!
+#}
