@@ -1,10 +1,11 @@
-import { GraphQLServer, PubSub } from 'graphql-yoga'
+import { ApolloServer, PubSub } from 'apollo-server'
 import resolvers from './resolvers'
 import { GameRepository } from "./repositories/gameRepository";
 import { Context } from "./utils";
 import { UserRepository } from "./repositories/userRepository";
 import { AuthService } from "./services/authService";
 import { GameService } from "./services/gameService";
+import { schema } from "./schema";
 
 const gameRepository = new GameRepository();
 const userRepository = new UserRepository();
@@ -12,12 +13,12 @@ const authService = new AuthService(userRepository);
 
 const pubsub = new PubSub();
 
-const server = new GraphQLServer({
-    typeDefs: './src/schema.graphql',
+const server = new ApolloServer({
+    typeDefs: schema,
     resolvers,
-    context: ({ request }): Context => {
+    context: ({ req }): Context => {
         //if there is no request, it is a websocket connection (subscription) - no auth needed so far there
-        const user = request ? authService.getLoggedInUserFromAuthHeader(request.header("Authorization")) : undefined;
+        const user = req ? authService.getLoggedInUserFromAuthHeader(req.header("Authorization")) : undefined;
         const gameService = new GameService(gameRepository, pubsub, user);
 
         return ({
@@ -31,4 +32,4 @@ const server = new GraphQLServer({
     },
 });
 
-server.start(() => console.log(`Server is running on http://localhost:4000`));
+server.listen().then(({ url }) => console.log(`Server is running on ${url}`));

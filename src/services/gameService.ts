@@ -2,7 +2,7 @@ import { areCoordinatesEqual, AuthUser, BoardCoordinates, Game, GameData, GameRe
 import { GameRepository } from "../repositories/gameRepository";
 import { AuthorizationError, BadRequestError } from "../utils";
 import * as AI from "./gameAi"
-import { PubSub } from "graphql-yoga";
+import { PubSub } from "apollo-server";
 
 export class GameService {
     private gameRepository: GameRepository;

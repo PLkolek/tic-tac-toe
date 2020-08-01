@@ -3,7 +3,7 @@ import { AuthService } from "./services/authService";
 import { AuthUser, Game, Saved } from "./model";
 import { GameService } from "./services/gameService";
 import { UserRepository } from "./repositories/userRepository";
-import { PubSub } from "graphql-yoga";
+import { PubSub } from "apollo-server";
 
 export interface Context {
     userRepository: UserRepository
