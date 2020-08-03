@@ -5,9 +5,8 @@ import { PubSub } from 'apollo-server'
 import { Inject, Service } from 'typedi'
 import Logger from 'bunyan'
 import { AuthUser } from '../model/user'
-import { Game, GameData, GameType, getGameResult } from '../model/game'
+import { addMove, Game, GameData, GameType, getGameResult } from '../model/game'
 import { areCoordinatesEqual, BoardCoordinates } from '../model/boardCoordinates'
-import { getBoard } from '../model/board'
 import { Saved } from '../model/util'
 import { GameResult } from '../model/gameResult'
 
@@ -114,12 +113,11 @@ export class GameService {
         }
 
         this.logger.info({ game, userId, coordinates }, 'Making move in the game')
-        const updatedGame = { ...game, moves: [...game.moves, coordinates] }
+        let updatedGame = addMove(game, coordinates)
         const gameResultAfterMove = getGameResult(updatedGame)
         if (game.type === GameType.SinglePlayer && gameResultAfterMove === GameResult.InProgress) {
             this.logger.info({ game, userId }, 'AI is making move in the game')
-            const aiMove = AI.makeMove(getBoard(updatedGame.moves)) //TODO: shorten this
-            updatedGame.moves.push(aiMove)
+            updatedGame = AI.makeMove(updatedGame)
         }
         const finalGame = this.gameRepository.update(updatedGame)
         const finalResult = getGameResult(updatedGame)

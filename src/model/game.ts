@@ -19,3 +19,8 @@ export enum GameType {
 
 export const getGameResult = (game: Game): GameResult =>
     getGameResultFromBoard(getBoard(game.moves))
+
+export const addMove = <T extends Game>(game: T, coordinates: BoardCoordinates): T => ({
+    ...game,
+    moves: [...game.moves, coordinates],
+})
