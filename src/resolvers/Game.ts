@@ -1,6 +1,11 @@
-import { ApiCoordinates, Board, Game as GameModel, GameResult, getBoard, getGameResult, omitPasswordHashFromUsers, Saved, UserData } from "../model"
 import { UserRepository } from "../repositories/userRepository";
-import { Resolver } from "./types";
+import { Saved } from "../model/util";
+import { omitPasswordHashFromUsers, UserData } from "../model/user";
+import { Board, getBoard } from "../model/board";
+import { GameResult } from "../model/gameResult";
+import { Game as GameModel, getGameResult } from "../model/game";
+import { Resolver } from "./resolverTypes";
+import { ApiCoordinates } from "./commonApiTypes";
 
 export const Game: Resolver<GameModel> = {
     players: async (parent, _args: {}, { container }): Promise<Saved<UserData>[]> => {
@@ -10,6 +15,6 @@ export const Game: Resolver<GameModel> = {
     moves: (parent): ApiCoordinates[] =>
         parent.moves.map(([x, y]) => ({ x, y })),
     board: (parent): Board => getBoard(parent.moves),
-    result: (parent: GameModel): GameResult => getGameResult(parent.moves)
+    result: (parent: GameModel): GameResult => getGameResult(parent)
 
 };

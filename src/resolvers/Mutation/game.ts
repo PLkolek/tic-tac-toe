@@ -1,7 +1,9 @@
-import { BadRequestError, GameOutput } from '../../utils'
-import { ApiCoordinates, BoardCoordinate, boardCoordinates, GameData } from "../../model";
+import { BadRequestError} from '../../utils'
 import { GameService } from "../../services/gameService";
-import { MutationInput, MutationResolver } from "../types";
+import { GameData } from "../../model/game";
+import { BoardCoordinate, boardCoordinates } from "../../model/boardCoordinates";
+import { MutationInput, MutationResolver } from "../resolverTypes";
+import { ApiCoordinates, GameOutput } from "../commonApiTypes";
 
 type CreateGameInput = {
     game: GameData
@@ -13,7 +15,7 @@ type JoinGameInput = {
 
 type MakeMoveInput = {
     gameId: string
-    coordinates: ApiCoordinates
+    coordinates: ApiCoordinates;
 }
 
 export const game: MutationResolver = {

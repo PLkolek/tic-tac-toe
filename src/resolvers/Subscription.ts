@@ -1,7 +1,9 @@
-import { Context, GameOutput } from '../utils'
-import { Game, Saved } from "../model";
+import { Context} from '../utils'
 import { PubSub } from 'apollo-server';
-import { SubscriptionResolver } from "./types";
+import { Game } from "../model/game";
+import { Saved } from "../model/util";
+import { SubscriptionResolver } from "./resolverTypes";
+import { GameOutput } from "./commonApiTypes";
 
 export const Subscription: SubscriptionResolver = {
     gameEnded: {

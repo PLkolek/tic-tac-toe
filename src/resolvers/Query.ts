@@ -1,6 +1,7 @@
 import { GameRepository } from "../repositories/gameRepository";
-import { Resolver } from "./types";
-import { Game, Saved } from "../model";
+import { Game } from "../model/game";
+import { Saved } from "../model/util";
+import { Resolver } from "./resolverTypes";
 
 export const Query: Resolver<void> = {
     games: (parent: void, args: {}, { container }): Promise<Saved<Game>[]> =>

@@ -1,4 +1,5 @@
-import { Board, BoardCoordinates, getEmptyFields } from "../model";
+import { Board, getEmptyFields } from "../model/board";
+import { BoardCoordinates } from "../model/boardCoordinates";
 
 export const makeMove = (board: Board): BoardCoordinates => {
     const emptyFields = getEmptyFields(board);

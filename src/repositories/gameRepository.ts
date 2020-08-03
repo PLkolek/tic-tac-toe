@@ -1,5 +1,6 @@
-import { Game, Saved } from "../model";
 import { Service } from "typedi";
+import { Saved } from "../model/util";
+import { Game } from "../model/game";
 
 @Service({ global: true })
 export class GameRepository {

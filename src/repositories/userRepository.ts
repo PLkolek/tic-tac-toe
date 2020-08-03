@@ -1,5 +1,6 @@
-import { DbUser, Saved } from "../model";
 import { Service } from "typedi";
+import { Saved } from "../model/util";
+import { DbUser } from "../model/user";
 
 @Service({ global: true })
 export class UserRepository {

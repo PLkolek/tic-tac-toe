@@ -1,6 +1,7 @@
-import { Saved, UnsavedUser, UserData } from "../../model";
 import { AuthService } from "../../services/authService";
-import { MutationInput, MutationResolver } from "../types";
+import { UnsavedUser, UserData } from "../../model/user";
+import { Saved } from "../../model/util";
+import { MutationInput, MutationResolver } from "../resolverTypes";
 
 type SignUpInput = {
     user: UnsavedUser

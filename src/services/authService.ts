@@ -1,10 +1,11 @@
-import { AuthUser, DbUser, omitPasswordHash, Saved, UnsavedUser, UserData } from "../model";
 import * as bcrypt from "bcryptjs";
 import { UserRepository } from "../repositories/userRepository";
 import * as jwt from 'jsonwebtoken'
 import { Inject, Service } from "typedi";
 import Logger from "bunyan";
 import { omit } from "../utils";
+import { AuthUser, DbUser, omitPasswordHash, UnsavedUser, UserData } from "../model/user";
+import { Saved } from "../model/util";
 
 type AuthResult = {
     user: Saved<UserData>
