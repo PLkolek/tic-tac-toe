@@ -17,6 +17,7 @@ TODO:
 * organize Input and Output types
 * global vs scoped services
 * global vs scoped repositories (use static?)
+* token validity time?
 
 Subscriptions are not authenticated
 Models are passed in pubsub
