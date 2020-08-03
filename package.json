@@ -9,6 +9,17 @@
     "build": "rimraf dist && tsc",
     "format": "prettier --write './src/**/*.{json,js,ts,tsx,md}'"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "tsc --noEmit && lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,ts,tsx,json,md}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -18,6 +29,8 @@
     "@types/jsonwebtoken": "^8.5.0",
     "@types/uuid": "^8.0.0",
     "dotenv-cli": "^3.2.0",
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.11",
     "nodemon": "^2.0.4",
     "prettier": "^2.0.5",
     "rimraf": "^3.0.2",
