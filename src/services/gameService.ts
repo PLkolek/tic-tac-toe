@@ -1,7 +1,6 @@
 import { GameRepository } from '../repositories/gameRepository'
 import { AuthorizationError, BadRequestError } from '../utils'
 import * as AI from './gameAi'
-import { PubSub } from 'apollo-server'
 import { Inject, Service } from 'typedi'
 import Logger from 'bunyan'
 import { AuthUser } from '../model/user'
@@ -17,12 +16,13 @@ import {
 import { BoardCoordinates } from '../model/boardCoordinates'
 import { Saved } from '../model/util'
 import { GameResult } from '../model/gameResult'
+import { SubscriptionService } from './subscriptionService'
 
 @Service()
 export class GameService {
     constructor(
         private gameRepository: GameRepository,
-        private pubsub: PubSub,
+        private subscriptionService: SubscriptionService,
         @Inject('loggedInUser') private loggedInUser: AuthUser | null,
         private logger: Logger,
     ) {}
@@ -92,7 +92,7 @@ export class GameService {
         const finalResult = getGameResult(game)
         if (finalResult !== GameResult.InProgress) {
             this.logger.info({ game, userId, result: finalResult }, 'Game has ended')
-            this.pubsub.publish('GameEnded', game)
+            this.subscriptionService.publishGameEnded(game)
         }
     }
 
