@@ -1,11 +1,10 @@
-import * as bcrypt from 'bcryptjs'
-import { UserRepository } from '../repositories/userRepository'
 import { Inject, Service } from 'typedi'
 import Logger from 'bunyan'
 import { omit } from '../utils'
-import { DbUser, omitPasswordHash, UnsavedUser, UserData } from '../model/user'
+import { UnsavedUser, UserData } from '../model/user'
 import { Saved } from '../model/util'
 import { JwtService } from './jwtService'
+import { UserService } from './userService'
 
 type AuthResult = {
     user: Saved<UserData>
@@ -15,19 +14,15 @@ type AuthResult = {
 @Service()
 export class AuthService {
     constructor(
-        private userRepository: UserRepository,
+        private userService: UserService,
         @Inject('unathenticatedLogger') private log: Logger,
         private jwtService: JwtService,
-    ) {
-        this.userRepository = userRepository
-    }
+    ) {}
 
     public async signUp(user: UnsavedUser): Promise<AuthResult> {
         const log = this.log.child({ user: omit(user, 'password') })
         log.info('Attempting to sign up')
-        const passwordHash = await bcrypt.hash(user.password, 10)
-
-        const savedUser = await this.userRepository.create({ email: user.email, passwordHash })
+        const savedUser = await this.userService.create(user)
         log.info('Sign up successful')
         return this.authResponse(savedUser)
     }
@@ -35,25 +30,20 @@ export class AuthService {
     public async login(email: string, password: string): Promise<AuthResult> {
         const log = this.log.child({ email })
         log.info('Attempting to log in')
-        const user = await this.userRepository.getByEmail(email)
-        if (!user) {
-            log.info('No user with such email found')
-            throw new Error(`No user found for email: ${email}`)
-        }
 
-        const valid = await bcrypt.compare(password, user.passwordHash)
-        if (!valid) {
-            log.info('Invalid password')
-            throw new Error('Invalid password')
+        const user = await this.userService.getByEmailAndPassword(email, password)
+        if (!user) {
+            log.info('Invalid email or password')
+            throw new Error('Invalid email or password')
         }
 
         log.info('Log in successful')
         return this.authResponse(user)
     }
 
-    private authResponse(user: Saved<DbUser>): AuthResult {
+    private authResponse(user: Saved<UserData>): AuthResult {
         return {
-            user: omitPasswordHash(user),
+            user: user,
             token: this.tokenForUser(user),
         }
     }
