@@ -25,7 +25,7 @@ export class AuthService {
     public async signUp(user: UnsavedUser): Promise<AuthResult> {
         const log = this.log.child({ user: omit(user, 'password') })
         log.info('Attempting to sign up')
-        const passwordHash = await bcrypt.hash(user.password, 10) //TODO: salt
+        const passwordHash = await bcrypt.hash(user.password, 10)
 
         const savedUser = await this.userRepository.create({ email: user.email, passwordHash })
         log.info('Sign up successful')
@@ -44,7 +44,7 @@ export class AuthService {
         const valid = await bcrypt.compare(password, user.passwordHash)
         if (!valid) {
             log.info('Invalid password')
-            throw new Error('Invalid password') //TODO: Handle this error properly
+            throw new Error('Invalid password')
         }
 
         log.info('Log in successful')

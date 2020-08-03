@@ -2,6 +2,7 @@ import { DbUser } from '../model/user'
 import { Saved } from '../model/util'
 import { Game } from '../model/game'
 import { Service } from 'typedi'
+import { BadRequestError } from '../utils'
 
 export enum StoreName {
     User = 'User',
@@ -57,8 +58,9 @@ export class InMemoryDb {
         if (objIndex != -1) {
             store.contents[objIndex] = obj as any
         } else {
-            //TODO: fail here
-            store.contents.push(obj as any)
+            throw new BadRequestError(
+                `Cannot update: item with id ${obj.id} does not exist in store ${storeName}`,
+            )
         }
         return obj
     }

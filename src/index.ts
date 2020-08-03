@@ -34,10 +34,6 @@ const server = new ApolloServer({
     typeDefs: schema,
     resolvers,
     context: ({ req }): Context => {
-        if (!req) {
-            console.log('Websocket')
-        }
-
         const requestId = uuidv4()
         const container = Container.of(requestId)
         container.set('unathenticatedLogger', rootLogger.child({ requestId }))
