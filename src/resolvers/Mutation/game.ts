@@ -17,18 +17,18 @@ type MakeMoveInput = {
 }
 
 export const game: MutationResolver = {
-    createGame(_parent: void, { input: { game } }: MutationInput<CreateGameInput>, { container }): GameOutput {
-        return { game: container.get(GameService).createGameByLoggedInUser(game) };
+    createGame(_parent: void, { input: { game } }: MutationInput<CreateGameInput>, { container }): Promise<GameOutput> {
+        return container.get(GameService).createGameByLoggedInUser(game).then(game => ({ game }))
     },
 
-    joinGame(_parent: void, { input: { gameId } }: MutationInput<JoinGameInput>, { container }): GameOutput {
-        return { game: container.get(GameService).joinGameByIdByLoggedInUser(gameId) };
+    joinGame(_parent: void, { input: { gameId } }: MutationInput<JoinGameInput>, { container }): Promise<GameOutput> {
+        return container.get(GameService).joinGameByIdByLoggedInUser(gameId).then(game => ({ game }))
     },
 
-    makeMove(_parent: void, { input: { gameId, coordinates } }: MutationInput<MakeMoveInput>, { container }): GameOutput {
+    makeMove(_parent: void, { input: { gameId, coordinates } }: MutationInput<MakeMoveInput>, { container }): Promise<GameOutput> {
         const x = validateCoordinate(coordinates.x);
         const y = validateCoordinate(coordinates.y);
-        return { game: container.get(GameService).makeMoveInGameByIdByLoggedInUser(gameId, [x, y]) };
+        return container.get(GameService).makeMoveInGameByIdByLoggedInUser(gameId, [x, y]).then(game => ({ game }));
     },
 
 };

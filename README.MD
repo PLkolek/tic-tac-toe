@@ -1,7 +1,6 @@
 TODO:
 * check options in tsconfig.json
 * use graphql codegen?
-* change repositories to return Promise
 * proper error handling
 * naming convention for resolver files
 * split model
@@ -18,6 +17,7 @@ TODO:
 * token validity time?
 * private in constructors
 * add logging in repositories?
+* let vs const
 
 Subscriptions are not authenticated
 Models are passed in pubsub

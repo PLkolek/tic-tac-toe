@@ -3,8 +3,8 @@ import { UserRepository } from "../repositories/userRepository";
 import { Resolver } from "./types";
 
 export const Game: Resolver<GameModel> = {
-    players: (parent, _args: {}, { container }): Saved<UserData>[] => {
-        let dbUsers = container.get(UserRepository).getByIds(parent.playerIds);
+    players: async (parent, _args: {}, { container }): Promise<Saved<UserData>[]> => {
+        const dbUsers = await container.get(UserRepository).getByIds(parent.playerIds);
         return omitPasswordHashFromUsers(dbUsers);
     }, //TODO move to service?
     moves: (parent): ApiCoordinates[] =>

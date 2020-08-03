@@ -24,7 +24,7 @@ export class AuthService {
         log.info("Attempting to sign up")
         const passwordHash = await bcrypt.hash(user.password, 10) //TODO: salt
 
-        const savedUser = this.userRepository.create({ email: user.email, passwordHash });
+        const savedUser = await this.userRepository.create({ email: user.email, passwordHash });
         log.info("Sign up successful")
         return this.authResponse(savedUser);
     }
@@ -32,7 +32,7 @@ export class AuthService {
     public async login(email: string, password: string): Promise<AuthResult> {
         const log = this.log.child({ email })
         log.info("Attempting to log in")
-        const user = this.userRepository.getByEmail(email)
+        const user = await this.userRepository.getByEmail(email)
         if (!user) {
             log.info("No user with such email found")
             throw new Error(`No user found for email: ${email}`)

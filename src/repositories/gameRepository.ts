@@ -1,22 +1,22 @@
 import { Game, Saved } from "../model";
 import { Service } from "typedi";
 
-@Service({global: true})
+@Service({ global: true })
 export class GameRepository {
     private games: Saved<Game>[] = [];
     private nextId: number = 1;
 
-    public create(game: Game): Saved<Game> {
+    public async create(game: Game): Promise<Saved<Game>> {
         const savedGame = { ...game, id: String(this.nextId++) };
         this.games.push(savedGame);
         return savedGame;
     }
 
-    public getAll(): Saved<Game>[] {
+    public async getAll(): Promise<Saved<Game>[]> {
         return this.games;
     }
 
-    public update(game: Saved<Game>): Saved<Game> {
+    public async update(game: Saved<Game>): Promise<Saved<Game>> {
         const gameIndex = this.games.findIndex(this.byId(game.id));
         if (gameIndex != -1) {
             this.games[gameIndex] = game;
@@ -27,7 +27,7 @@ export class GameRepository {
         return game
     }
 
-    public get(gameId: string): Saved<Game> | undefined {
+    public async get(gameId: string): Promise<Saved<Game> | undefined> {
         return this.games.find(this.byId(gameId));
     }
 

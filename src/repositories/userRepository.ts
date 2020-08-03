@@ -6,22 +6,22 @@ export class UserRepository {
     private users: Saved<DbUser>[] = [];
     private nextId: number = 1;
 
-    public create(user: DbUser): Saved<DbUser> {
+    public async create(user: DbUser): Promise<Saved<DbUser>> {
         //TODO: email unique
         const savedUser = { ...user, id: String(this.nextId++) }
         this.users.push(savedUser);
         return savedUser;
     }
 
-    public getAll(): Saved<DbUser>[] {
+    public async getAll(): Promise<Saved<DbUser>[]> {
         return this.users;
     }
 
-    public getByEmail(email: string): Saved<DbUser> | undefined {
+    public async getByEmail(email: string): Promise<Saved<DbUser> | undefined> {
         return this.users.find(u => u.email == email);
     }
 
-    public getByIds(ids: string[]): Saved<DbUser>[] {
+    public async getByIds(ids: string[]): Promise<Saved<DbUser>[]> {
         return this.users.filter(u => ids.includes(u.id))
     }
 }

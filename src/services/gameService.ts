@@ -15,24 +15,25 @@ export class GameService {
     ) {
     }
 
-    public createGameByLoggedInUser(game: GameData): Saved<Game> {
+    public createGameByLoggedInUser(game: GameData): Promise<Saved<Game>> {
         return this.createGameBy(game, this.getLoggedInUserOrFail().userId)
     }
 
-    public createGameBy(game: GameData, userId: string): Saved<Game> {
+    public createGameBy(game: GameData, userId: string): Promise<Saved<Game>> {
         this.logger.info({ game, userId }, "Creating game");
         return this.gameRepository.create({ ...game, playerIds: [userId], moves: [] })
     }
 
-    public joinGameByIdByLoggedInUser(gameId: string): Saved<Game> {
+    public joinGameByIdByLoggedInUser(gameId: string): Promise<Saved<Game>> {
         return this.joinGameById(gameId, this.getLoggedInUserOrFail().userId);
     }
 
-    public joinGameById(gameId: string, userId: string): Saved<Game> {
-        return this.joinGame(this.getGameOrFail(gameId), userId);
+    public async joinGameById(gameId: string, userId: string): Promise<Saved<Game>> {
+        let game = await this.getGameOrFail(gameId);
+        return this.joinGame(game, userId);
     }
 
-    public joinGame(game: Saved<Game>, userId: string): Saved<Game> {
+    public joinGame(game: Saved<Game>, userId: string): Promise<Saved<Game>> {
         this.logger.info({ game, userId }, "Attempting to join game");
         if (game.type == GameType.SinglePlayer) {
             this.logger.info({ game, userId }, "Cannot join, the game is single player");
@@ -40,27 +41,28 @@ export class GameService {
         }
         if (game.playerIds.indexOf(userId) != -1) {
             this.logger.info({ game, userId }, "User already present in the game");
-            return game;
+            return Promise.resolve(game);
         }
         if (game.playerIds.length >= 2) {
             this.logger.info({ game, userId }, "Cannot join, the game is full");
             throw new BadRequestError(`Game "${game.name}" is full. Try joining another game.`)
         }
-        const updatedGame = { ...game, playerIds: [...game.playerIds, userId] };
-        this.gameRepository.update(updatedGame);
+        const gameWithAddedPlayer = { ...game, playerIds: [...game.playerIds, userId] };
+        const updatedGame = this.gameRepository.update(gameWithAddedPlayer);
         this.logger.info({ game, userId }, "Game joined");
         return updatedGame;
     }
 
-    public makeMoveInGameByIdByLoggedInUser(gameId: string, coordinates: BoardCoordinates): Saved<Game> {
+    public makeMoveInGameByIdByLoggedInUser(gameId: string, coordinates: BoardCoordinates): Promise<Saved<Game>> {
         return this.makeMoveInGameById(gameId, this.getLoggedInUserOrFail().userId, coordinates);
     }
 
-    public makeMoveInGameById(gameId: string, userId: string, coordinates: BoardCoordinates): Saved<Game> {
-        return this.makeMove(this.getGameOrFail(gameId), userId, coordinates);
+    public async makeMoveInGameById(gameId: string, userId: string, coordinates: BoardCoordinates): Promise<Saved<Game>> {
+        const game = await this.getGameOrFail(gameId);
+        return this.makeMove(game, userId, coordinates);
     }
 
-    public makeMove(game: Saved<Game>, userId: string, coordinates: BoardCoordinates): Saved<Game> {
+    public makeMove(game: Saved<Game>, userId: string, coordinates: BoardCoordinates): Promise<Saved<Game>> {
         this.logger.info({ game, coordinates, userId }, "Attempting to make move in game");
         //TODO: extract, split
         const playerNumber = game.playerIds.indexOf(userId);
@@ -91,7 +93,7 @@ export class GameService {
             updatedGame.moves.push(aiMove)
         }
         const finalGame = this.gameRepository.update(updatedGame);
-        const finalResult = getGameResult(finalGame.moves);
+        const finalResult = getGameResult(updatedGame.moves);
         if (finalResult !== GameResult.InProgress) {
             this.logger.info({ game, userId, result: finalResult }, "Game has ended");
             this.pubsub.publish("GameEnded", finalGame);
@@ -101,8 +103,8 @@ export class GameService {
         return finalGame;
     }
 
-    private getGameOrFail(gameId: string): Saved<Game> {
-        const game = this.gameRepository.get(gameId);
+    private async getGameOrFail(gameId: string): Promise<Saved<Game>> {
+        const game = await this.gameRepository.get(gameId);
         if (!game) {
             this.logger.info({ gameId }, "The game doesn't exist");
             throw new BadRequestError(`Game ${gameId} doesn't exist. Please provide a valid game id.`)
