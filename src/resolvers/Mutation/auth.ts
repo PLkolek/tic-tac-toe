@@ -1,6 +1,6 @@
-import { Context, MutationInput } from '../../utils'
 import { Saved, UnsavedUser, UserData } from "../../model";
 import { AuthService } from "../../services/authService";
+import { MutationInput, MutationResolver } from "../types";
 
 type SignUpInput = {
     user: UnsavedUser
@@ -20,12 +20,13 @@ type LogInInput = {
     passwordAuth: PasswordAuthInput
 }
 
-export const auth = {
-    async signUp(_: void, { input: { user } }: MutationInput<SignUpInput>, { container }: Context): Promise<AuthOutput> {
+
+export const auth: MutationResolver = {
+    async signUp(_parent, { input: { user } }: MutationInput<SignUpInput>, { container }): Promise<AuthOutput> {
         return container.get(AuthService).signUp(user)
     },
 
-    async login(_: void, { input: { passwordAuth } }: MutationInput<LogInInput>, { container }: Context): Promise<AuthOutput> {
+    async login(_parent, { input: { passwordAuth } }: MutationInput<LogInInput>, { container }): Promise<AuthOutput> {
         return container.get(AuthService).login(passwordAuth.email, passwordAuth.password)
     },
 }

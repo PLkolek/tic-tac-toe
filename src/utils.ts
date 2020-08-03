@@ -5,10 +5,6 @@ export interface Context {
     container: ContainerInstance
 }
 
-export type MutationInput<T> = {
-    input: T
-}
-
 export class BadRequestError extends Error {
     constructor(message: string) {
         super("Bad request: " + message);
