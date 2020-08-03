@@ -5,8 +5,16 @@ import { PubSub } from 'apollo-server'
 import { Inject, Service } from 'typedi'
 import Logger from 'bunyan'
 import { AuthUser } from '../model/user'
-import { addMove, Game, GameData, GameType, getGameResult } from '../model/game'
-import { areCoordinatesEqual, BoardCoordinates } from '../model/boardCoordinates'
+import {
+    addMove,
+    Game,
+    GameData,
+    GameType,
+    getGameResult,
+    validateJoiningGame,
+    validateMove,
+} from '../model/game'
+import { BoardCoordinates } from '../model/boardCoordinates'
 import { Saved } from '../model/util'
 import { GameResult } from '../model/gameResult'
 
@@ -39,20 +47,7 @@ export class GameService {
 
     public joinGame(game: Saved<Game>, userId: string): Promise<Saved<Game>> {
         this.logger.info({ game, userId }, 'Attempting to join game')
-        if (game.type == GameType.SinglePlayer) {
-            this.logger.info({ game, userId }, 'Cannot join, the game is single player')
-            throw new BadRequestError(
-                `Game "${game.name}" is a single player game. Try joining a multi player game instead.`,
-            )
-        }
-        if (game.playerIds.indexOf(userId) != -1) {
-            this.logger.info({ game, userId }, 'User already present in the game')
-            return Promise.resolve(game)
-        }
-        if (game.playerIds.length >= 2) {
-            this.logger.info({ game, userId }, 'Cannot join, the game is full')
-            throw new BadRequestError(`Game "${game.name}" is full. Try joining another game.`)
-        }
+        this.validateJoiningGame(game, userId)
         const gameWithAddedPlayer = { ...game, playerIds: [...game.playerIds, userId] }
         const updatedGame = this.gameRepository.update(gameWithAddedPlayer)
         this.logger.info({ game, userId }, 'Game joined')
@@ -75,59 +70,55 @@ export class GameService {
         return this.makeMove(game, userId, coordinates)
     }
 
-    public makeMove(
+    public async makeMove(
         game: Saved<Game>,
         userId: string,
         coordinates: BoardCoordinates,
     ): Promise<Saved<Game>> {
         this.logger.info({ game, coordinates, userId }, 'Attempting to make move in game')
-        //TODO: extract, split
-        const playerNumber = game.playerIds.indexOf(userId)
-        if (playerNumber == -1) {
-            this.logger.info({ game, userId }, 'Cannot make move, player not member of the game')
-            throw new BadRequestError(
-                `Player ${userId} is not a member of game ${game.name}. Please join game before making moves.`,
-            )
-        }
-        if (game.moves.length % 2 != playerNumber) {
-            this.logger.info({ game, userId }, "Cannot make move, it's not the player's turn")
-            throw new BadRequestError(
-                `It's not a turn of player ${userId} in game ${game.name}. Please wait for your turn.`,
-            )
-        }
-        if (game.moves.find(areCoordinatesEqual(coordinates))) {
-            this.logger.info(
-                { game, userId, coordinates },
-                'Cannot make move, field is occupied already',
-            )
-            throw new BadRequestError(
-                `Field [${coordinates[0]}, ${coordinates[1]}] is already occupied game in ${game.name}. Please make move at a free field`,
-            )
-        }
-        const gameResult = getGameResult(game)
-        if (gameResult !== GameResult.InProgress) {
-            this.logger.info({ game, userId }, 'Cannot make move, game has ended')
-            throw new BadRequestError(
-                `Game ${game.name} has already ended with result ${gameResult}. Please make a move in an unfinished game`,
-            )
-        }
+        this.validateMove(game, userId, coordinates)
 
         this.logger.info({ game, userId, coordinates }, 'Making move in the game')
         let updatedGame = addMove(game, coordinates)
-        const gameResultAfterMove = getGameResult(updatedGame)
-        if (game.type === GameType.SinglePlayer && gameResultAfterMove === GameResult.InProgress) {
-            this.logger.info({ game, userId }, 'AI is making move in the game')
-            updatedGame = AI.makeMove(updatedGame)
-        }
-        const finalGame = this.gameRepository.update(updatedGame)
-        const finalResult = getGameResult(updatedGame)
-        if (finalResult !== GameResult.InProgress) {
-            this.logger.info({ game, userId, result: finalResult }, 'Game has ended')
-            this.pubsub.publish('GameEnded', finalGame)
-        }
+        updatedGame = this.makeAIMoveIfNeeded(updatedGame, userId)
+        const finalGame = await this.gameRepository.update(updatedGame)
+        this.triggerNotificationIfGameEnded(finalGame, userId)
 
         this.logger.info({ game, userId, coordinates }, 'The has been made')
         return finalGame
+    }
+
+    private triggerNotificationIfGameEnded(game: Game, userId: string) {
+        const finalResult = getGameResult(game)
+        if (finalResult !== GameResult.InProgress) {
+            this.logger.info({ game, userId, result: finalResult }, 'Game has ended')
+            this.pubsub.publish('GameEnded', game)
+        }
+    }
+
+    private makeAIMoveIfNeeded(game: Saved<Game>, userId: string) {
+        const gameResultAfterMove = getGameResult(game)
+        if (game.type === GameType.SinglePlayer && gameResultAfterMove === GameResult.InProgress) {
+            this.logger.info({ game, userId }, 'AI is making move in the game')
+            return AI.makeMove(game)
+        }
+        return game
+    }
+
+    private validateMove(game: Game, userId: string, coordinates: BoardCoordinates) {
+        const invalidMoveCause = validateMove(game, userId, coordinates)
+        if (invalidMoveCause) {
+            this.logger.info({ game, coordinates, userId }, invalidMoveCause)
+            throw new BadRequestError(invalidMoveCause)
+        }
+    }
+
+    private validateJoiningGame(game: Game, userId: string) {
+        const invalidJoinCause = validateJoiningGame(game, userId)
+        if (invalidJoinCause) {
+            this.logger.info({ game, userId }, invalidJoinCause)
+            throw new BadRequestError(invalidJoinCause)
+        }
     }
 
     private async getGameOrFail(gameId: string): Promise<Saved<Game>> {
