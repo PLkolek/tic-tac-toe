@@ -27,7 +27,7 @@ const server = new ApolloServer({
 
         const requestId = uuidv4()
         const container = Container.of(requestId)
-        container.set('unathenticatedLogger', rootLogger.child(requestId))
+        container.set('unathenticatedLogger', rootLogger.child({ requestId }))
 
         //if there is no request, it is a websocket connection (subscription) - no auth needed so far there
         const user = req

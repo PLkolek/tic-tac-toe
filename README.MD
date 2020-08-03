@@ -5,10 +5,7 @@ TODO:
 * resolve TODOs in code (search for //)
 * unit tests
 * organize Input and Output types
-* global vs scoped services
-* global vs scoped repositories (use static?)
 * token validity time?
-* add logging in repositories?
 
 Subscriptions are not authenticated
 Models are passed in pubsub
