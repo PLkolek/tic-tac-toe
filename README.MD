@@ -2,7 +2,6 @@ TODO:
 * check options in tsconfig.json
 * use graphql codegen?
 * proper error handling
-* naming convention for resolver files
 * split model
 * prettier
 * resolve TODOs in code (search for //)
