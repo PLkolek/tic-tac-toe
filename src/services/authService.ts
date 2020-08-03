@@ -1,11 +1,11 @@
 import * as bcrypt from 'bcryptjs'
 import { UserRepository } from '../repositories/userRepository'
-import * as jwt from 'jsonwebtoken'
 import { Inject, Service } from 'typedi'
 import Logger from 'bunyan'
 import { omit } from '../utils'
-import { AuthUser, DbUser, omitPasswordHash, UnsavedUser, UserData } from '../model/user'
+import { DbUser, omitPasswordHash, UnsavedUser, UserData } from '../model/user'
 import { Saved } from '../model/util'
+import { JwtService } from './jwtService'
 
 type AuthResult = {
     user: Saved<UserData>
@@ -17,6 +17,7 @@ export class AuthService {
     constructor(
         private userRepository: UserRepository,
         @Inject('unathenticatedLogger') private log: Logger,
+        private jwtService: JwtService,
     ) {
         this.userRepository = userRepository
     }
@@ -50,18 +51,6 @@ export class AuthService {
         return this.authResponse(user)
     }
 
-    public getLoggedInUserFromAuthHeader(header: string | undefined): AuthUser | null {
-        if (header) {
-            const token = header.replace(/^Bearer /, '')
-            return this.getLoggedInUserFromToken(token)
-        }
-        return null
-    }
-
-    public getLoggedInUserFromToken(token: string): AuthUser {
-        return jwt.verify(token, AuthService.appSecret()) as AuthUser
-    }
-
     private authResponse(user: Saved<DbUser>): AuthResult {
         return {
             user: omitPasswordHash(user),
@@ -70,15 +59,6 @@ export class AuthService {
     }
 
     private tokenForUser(user: Saved<UserData>): string {
-        return this.sign({ userId: user.id })
-    }
-
-    private sign(userData: AuthUser): string {
-        return jwt.sign(userData, AuthService.appSecret())
-    }
-
-    private static appSecret(): string {
-        //TODO: config injection? Remove that ??
-        return process.env.APP_SECRET ?? 'wololo'
+        return this.jwtService.sign({ userId: user.id })
     }
 }

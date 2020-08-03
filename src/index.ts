@@ -2,17 +2,30 @@ import 'reflect-metadata'
 import { ApolloServer, PubSub } from 'apollo-server'
 import resolvers from './resolvers'
 import { Context } from './utils'
-import { AuthService } from './services/authService'
 import { schema } from './schema'
 import { Container } from 'typedi'
 import { v4 as uuidv4 } from 'uuid'
 import * as bunyan from 'bunyan'
 import Logger from 'bunyan'
+import { JwtService } from './services/jwtService'
 
 Container.set({
     global: true,
     type: PubSub,
     value: new PubSub(),
+})
+
+const appSecret = process.env.APP_SECRET
+if (!appSecret) {
+    throw new Error(
+        'APP_SECRET environment variable is absent, please set it for JWT signing and verification.',
+    )
+}
+
+Container.set({
+    global: true,
+    id: 'appSecret',
+    value: appSecret,
 })
 
 const rootLogger = bunyan.createLogger({ name: 'tic-tac-toe' })
@@ -31,7 +44,7 @@ const server = new ApolloServer({
 
         //if there is no request, it is a websocket connection (subscription) - no auth needed so far there
         const user = req
-            ? container.get(AuthService).getLoggedInUserFromAuthHeader(req.header('Authorization'))
+            ? container.get(JwtService).getLoggedInUserFromAuthHeader(req.header('Authorization'))
             : null
         container.set('loggedInUser', user)
 
