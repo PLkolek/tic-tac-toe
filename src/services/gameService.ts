@@ -3,13 +3,18 @@ import { GameRepository } from "../repositories/gameRepository";
 import { AuthorizationError, BadRequestError } from "../utils";
 import * as AI from "./gameAi"
 import { PubSub } from "apollo-server";
+import { Inject, Service } from "typedi";
 
+@Service()
 export class GameService {
     private gameRepository: GameRepository;
     private pubsub: PubSub;
-    private loggedInUser: AuthUser | undefined;
+    private loggedInUser: AuthUser | null;
 
-    constructor(gameRepository: GameRepository, pubsub: PubSub, loggedInUser: AuthUser | undefined) {
+    constructor(gameRepository: GameRepository,
+                pubsub: PubSub,
+                @Inject("loggedInUser") loggedInUser: AuthUser | null
+    ) {
         this.gameRepository = gameRepository;
         this.pubsub = pubsub;
         this.loggedInUser = loggedInUser;

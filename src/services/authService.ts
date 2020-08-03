@@ -2,12 +2,14 @@ import { AuthUser, DbUser, omitPasswordHash, Saved, UnsavedUser, UserData } from
 import * as bcrypt from "bcryptjs";
 import { UserRepository } from "../repositories/userRepository";
 import * as jwt from 'jsonwebtoken'
+import { Service } from "typedi";
 
 type AuthResult = {
     user: Saved<UserData>
     token: string
 }
 
+@Service()
 export class AuthService {
     private userRepository: UserRepository;
 
@@ -36,12 +38,12 @@ export class AuthService {
         return this.authResponse(user);
     }
 
-    public getLoggedInUserFromAuthHeader(header: string | undefined): AuthUser | undefined {
+    public getLoggedInUserFromAuthHeader(header: string | undefined): AuthUser | null {
         if (header) {
             const token = header.replace(/^Bearer /, "");
             return this.getLoggedInUserFromToken(token);
         }
-        return undefined;
+        return null;
     }
 
     public getLoggedInUserFromToken(token: string): AuthUser {

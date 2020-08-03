@@ -1,17 +1,8 @@
-import { GameRepository } from "./repositories/gameRepository";
-import { AuthService } from "./services/authService";
-import { AuthUser, Game, Saved } from "./model";
-import { GameService } from "./services/gameService";
-import { UserRepository } from "./repositories/userRepository";
-import { PubSub } from "apollo-server";
+import { Game, Saved } from "./model";
+import { ContainerInstance } from "typedi/ContainerInstance";
 
 export interface Context {
-    userRepository: UserRepository
-    gameRepository: GameRepository
-    gameService: GameService
-    authService: AuthService
-    user: AuthUser | undefined
-    pubsub: PubSub
+    container: ContainerInstance
 }
 
 export type MutationInput<T> = {

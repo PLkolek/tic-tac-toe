@@ -1,5 +1,6 @@
 import { BadRequestError, Context, GameOutput, MutationInput } from '../../utils'
 import { ApiCoordinates, BoardCoordinate, boardCoordinates,  GameData } from "../../model";
+import { GameService } from "../../services/gameService";
 
 type CreateGameInput = {
     game: GameData
@@ -15,18 +16,18 @@ type MakeMoveInput = {
 }
 
 export const game = {
-    createGame(_: void, { input: { game } }: MutationInput<CreateGameInput>, { gameService }: Context): GameOutput {
-        return { game: gameService.createGameByLoggedInUser(game) };
+    createGame(_: void, { input: { game } }: MutationInput<CreateGameInput>, { container }: Context): GameOutput {
+        return { game: container.get(GameService).createGameByLoggedInUser(game) };
     },
 
-    joinGame(_: void, { input: { gameId } }: MutationInput<JoinGameInput>, { gameService }: Context): GameOutput {
-        return { game: gameService.joinGameByIdByLoggedInUser(gameId) };
+    joinGame(_: void, { input: { gameId } }: MutationInput<JoinGameInput>, { container }: Context): GameOutput {
+        return { game: container.get(GameService).joinGameByIdByLoggedInUser(gameId) };
     },
 
-    makeMove(_: void, { input: { gameId, coordinates } }: MutationInput<MakeMoveInput>, { gameService }: Context): GameOutput {
+    makeMove(_: void, { input: { gameId, coordinates } }: MutationInput<MakeMoveInput>, { container }: Context): GameOutput {
         const x = validateCoordinate(coordinates.x);
         const y = validateCoordinate(coordinates.y);
-        return { game: gameService.makeMoveInGameByIdByLoggedInUser(gameId, [x, y]) };
+        return { game: container.get(GameService).makeMoveInGameByIdByLoggedInUser(gameId, [x, y]) };
     },
 
 };

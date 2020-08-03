@@ -1,5 +1,7 @@
 import { DbUser, Saved } from "../model";
+import { Service } from "typedi";
 
+@Service({ global: true })
 export class UserRepository {
     private users: Saved<DbUser>[] = [];
     private nextId: number = 1;

@@ -1,5 +1,7 @@
 import { Game, Saved } from "../model";
+import { Service } from "typedi";
 
+@Service({global: true})
 export class GameRepository {
     private games: Saved<Game>[] = [];
     private nextId: number = 1;

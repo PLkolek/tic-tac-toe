@@ -15,8 +15,12 @@ TODO:
 * type vs interface
 * _ vs names
 * organize Input and Output types
+* global vs scoped services
+* global vs scoped repositories (use static?)
 
 Subscriptions are not authenticated
 Models are passed in pubsub
 
 https://www.apollographql.com/blog/designing-graphql-mutations-e09de826ed97/
+
+dependency on container in resolvers :(
