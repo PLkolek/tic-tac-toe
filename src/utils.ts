@@ -24,3 +24,6 @@ export const omit = <T, Property extends keyof T>(
     const { [property]: _, ...objWithoutProperty } = obj
     return objWithoutProperty
 }
+
+export const randomInt = (startInclusive: number, endExclusive: number) =>
+    startInclusive + Math.floor(Math.random() * (endExclusive - startInclusive))
