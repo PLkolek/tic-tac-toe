@@ -1,6 +1,6 @@
 import { UserRepository } from './userRepository'
 import { InMemoryDb } from './inMemoryDb'
-import { BadRequestError } from '../utils'
+import { UserInputError } from 'apollo-server'
 
 test('user creation succeeds if email has not been used yet', async () => {
     const userRepository = new UserRepository(new InMemoryDb())
@@ -13,5 +13,5 @@ test('user creation fails if email is used', async () => {
     await userRepository.create({ passwordHash: 'some hash', email: 'email@test.com' })
     await expect(
         userRepository.create({ passwordHash: 'other hash', email: 'email@test.com' }),
-    ).rejects.toThrow(BadRequestError)
+    ).rejects.toThrow(UserInputError)
 })

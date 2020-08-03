@@ -4,19 +4,6 @@ export type Context = {
     container: ContainerInstance
 }
 
-export class BadRequestError extends Error {
-    constructor(message: string) {
-        super('Bad request: ' + message)
-        Object.setPrototypeOf(this, BadRequestError.prototype)
-    }
-}
-
-export class AuthorizationError extends Error {
-    constructor(message: string) {
-        super('Authorization error: ' + message)
-    }
-}
-
 export const omit = <T, Property extends keyof T>(
     obj: T,
     property: Property,

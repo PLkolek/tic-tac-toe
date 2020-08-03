@@ -1,5 +1,4 @@
 import { GameRepository } from '../repositories/gameRepository'
-import { AuthorizationError, BadRequestError } from '../utils'
 import * as AI from './gameAi'
 import { Inject, Service } from 'typedi'
 import Logger from 'bunyan'
@@ -18,6 +17,7 @@ import { Saved } from '../model/util'
 import { GameResult } from '../model/gameResult'
 import { SubscriptionService } from './subscriptionService'
 import { UserService } from './userService'
+import { AuthenticationError, UserInputError } from 'apollo-server'
 
 @Service()
 export class GameService {
@@ -111,7 +111,7 @@ export class GameService {
         const invalidMoveCause = validateMove(game, userId, coordinates)
         if (invalidMoveCause) {
             this.logger.info({ game, coordinates, userId }, invalidMoveCause)
-            throw new BadRequestError(invalidMoveCause)
+            throw new UserInputError(invalidMoveCause)
         }
     }
 
@@ -119,7 +119,7 @@ export class GameService {
         const invalidJoinCause = validateJoiningGame(game, userId)
         if (invalidJoinCause) {
             this.logger.info({ game, userId }, invalidJoinCause)
-            throw new BadRequestError(invalidJoinCause)
+            throw new UserInputError(invalidJoinCause)
         }
     }
 
@@ -127,7 +127,7 @@ export class GameService {
         const game = await this.gameRepository.get(gameId)
         if (!game) {
             this.logger.info({ gameId }, "The game doesn't exist")
-            throw new BadRequestError(
+            throw new UserInputError(
                 `Game ${gameId} doesn't exist. Please provide a valid game id.`,
             )
         }
@@ -137,7 +137,7 @@ export class GameService {
     private getLoggedInUserOrFail(): AuthUser {
         if (!this.loggedInUser) {
             this.logger.info('User is not logged in')
-            throw new AuthorizationError('You have to be logged in to perform this operation')
+            throw new AuthenticationError('You have to be logged in to perform this operation')
         }
         return this.loggedInUser
     }

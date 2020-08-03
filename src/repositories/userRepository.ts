@@ -3,7 +3,7 @@ import { Saved } from '../model/util'
 import { DbUser } from '../model/user'
 import { BaseRepository } from './baseRepository'
 import { InMemoryDb, StoreName } from './inMemoryDb'
-import { BadRequestError } from '../utils'
+import { UserInputError } from 'apollo-server'
 
 @Service()
 export class UserRepository extends BaseRepository<StoreName.User> {
@@ -14,7 +14,7 @@ export class UserRepository extends BaseRepository<StoreName.User> {
     public async create(user: DbUser): Promise<Saved<DbUser>> {
         const existingUser = await this.getByEmail(user.email)
         if (existingUser) {
-            throw new BadRequestError(`Email ${user.email} is already used`)
+            throw new UserInputError(`Email ${user.email} is already used`)
         }
         return super.create(user)
     }

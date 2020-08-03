@@ -5,6 +5,7 @@ import { UnsavedUser, UserData } from '../model/user'
 import { Saved } from '../model/util'
 import { JwtService } from './jwtService'
 import { UserService } from './userService'
+import { UserInputError } from 'apollo-server'
 
 type AuthResult = {
     user: Saved<UserData>
@@ -34,7 +35,7 @@ export class AuthService {
         const user = await this.userService.getByEmailAndPassword(email, password)
         if (!user) {
             log.info('Invalid email or password')
-            throw new Error('Invalid email or password')
+            throw new UserInputError('Invalid email or password')
         }
 
         log.info('Log in successful')

@@ -1,9 +1,9 @@
-import { BadRequestError } from '../../utils'
 import { GameService } from '../../services/gameService'
 import { GameData } from '../../model/game'
 import { BoardCoordinate, boardCoordinates } from '../../model/boardCoordinates'
 import { MutationInput, MutationResolver } from '../resolverTypes'
 import { ApiCoordinates, GameOutput } from '../commonApiTypes'
+import { UserInputError } from 'apollo-server'
 
 type CreateGameInput = {
     game: GameData
@@ -57,7 +57,7 @@ export const game: MutationResolver = {
 
 const validateCoordinate = (coordinate: number): BoardCoordinate => {
     if (!boardCoordinates.includes(coordinate as BoardCoordinate)) {
-        throw new BadRequestError(
+        throw new UserInputError(
             `Coordinates must be one of the following values: ${boardCoordinates.join(', ')}`,
         )
     }
