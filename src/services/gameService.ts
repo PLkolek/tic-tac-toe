@@ -34,7 +34,7 @@ export class GameService {
     }
 
     public async joinGameById(gameId: string, userId: string): Promise<Saved<Game>> {
-        let game = await this.getGameOrFail(gameId)
+        const game = await this.getGameOrFail(gameId)
         return this.joinGame(game, userId)
     }
 
