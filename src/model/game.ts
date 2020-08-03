@@ -1,9 +1,9 @@
-import { BoardCoordinates } from "./boardCoordinates";
-import { GameResult } from "./gameResult";
-import { getBoard, getGameResultFromBoard } from "./board";
+import { BoardCoordinates } from './boardCoordinates'
+import { GameResult } from './gameResult'
+import { getBoard, getGameResultFromBoard } from './board'
 
 export type GameData = {
-    name: string,
+    name: string
     type: GameType
 }
 
@@ -14,7 +14,7 @@ export type Game = GameData & {
 
 export enum GameType {
     SinglePlayer = 'SINGLEPLAYER',
-    MultiPlayer = 'MULTIPLAYER'
+    MultiPlayer = 'MULTIPLAYER',
 }
 
 export const getGameResult = (game: Game): GameResult =>

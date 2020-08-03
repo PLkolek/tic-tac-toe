@@ -1,4 +1,4 @@
-import { gql } from "apollo-server";
+import { gql } from 'apollo-server'
 
 export const schema = gql`
     type Query {
@@ -34,7 +34,6 @@ export const schema = gql`
         x: Int!
         y: Int!
     }
-
 
     type GamePayload {
         game: Game
@@ -105,5 +104,4 @@ export const schema = gql`
         id: ID!
         email: String!
     }
-
 `

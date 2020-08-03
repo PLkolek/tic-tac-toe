@@ -1,4 +1,4 @@
-import { ContainerInstance } from "typedi/ContainerInstance";
+import { ContainerInstance } from 'typedi/ContainerInstance'
 
 export interface Context {
     container: ContainerInstance
@@ -6,17 +6,20 @@ export interface Context {
 
 export class BadRequestError extends Error {
     constructor(message: string) {
-        super("Bad request: " + message);
+        super('Bad request: ' + message)
     }
 }
 
 export class AuthorizationError extends Error {
     constructor(message: string) {
-        super("Authorization error: " + message);
+        super('Authorization error: ' + message)
     }
 }
 
-export const omit = <T, Property extends keyof T>(obj: T, property: Property): Omit<T, Property> => {
-    const { [property]: _, ...objWithoutProperty } = obj;
+export const omit = <T, Property extends keyof T>(
+    obj: T,
+    property: Property,
+): Omit<T, Property> => {
+    const { [property]: _, ...objWithoutProperty } = obj
     return objWithoutProperty
-};
+}

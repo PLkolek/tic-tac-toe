@@ -1,8 +1,8 @@
-import { Saved } from "../model/util";
-import { Game } from "../model/game";
+import { Saved } from '../model/util'
+import { Game } from '../model/game'
 
 export type ApiCoordinates = {
-    x: number,
+    x: number
     y: number
 }
 export type GameOutput = {

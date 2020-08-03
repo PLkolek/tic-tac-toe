@@ -1,10 +1,10 @@
 export enum PlayerSymbol {
-    X = "X",
-    O = "O"
+    X = 'X',
+    O = 'O',
 }
 
-export const firstPlayerSymbol = PlayerSymbol.O;
-export const secondPlayerSymbol = PlayerSymbol.X;
+export const firstPlayerSymbol = PlayerSymbol.O
+export const secondPlayerSymbol = PlayerSymbol.X
 
 export const getPlayerSymbol = (playerNumber: number): PlayerSymbol => {
     if (playerNumber === 0) {
@@ -12,4 +12,4 @@ export const getPlayerSymbol = (playerNumber: number): PlayerSymbol => {
     } else {
         return secondPlayerSymbol
     }
-};
+}
