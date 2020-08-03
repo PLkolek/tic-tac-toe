@@ -13,10 +13,10 @@ type Store<T> = {
     nextId: number
 }
 
-const emptyStore: Store<any> = {
+const emptyStore = <T>(): Store<T> => ({
     contents: [],
     nextId: 1,
-}
+})
 
 export type StoreTypes = {
     [StoreName.User]: DbUser
@@ -30,8 +30,8 @@ type Db = {
 @Service({ global: true })
 export class InMemoryDb {
     private stores: Db = {
-        [StoreName.User]: emptyStore,
-        [StoreName.Game]: emptyStore,
+        [StoreName.User]: emptyStore(),
+        [StoreName.Game]: emptyStore(),
     }
 
     public create<SN extends keyof StoreTypes, Obj extends StoreTypes[SN]>(
@@ -40,7 +40,7 @@ export class InMemoryDb {
     ): Saved<Obj> {
         const store = this.stores[storeName]
         const savedObj = { ...obj, id: String(store.nextId++) }
-        store.contents.push(obj as any)
+        store.contents.push(savedObj as any)
         return savedObj
     }
 
@@ -79,6 +79,6 @@ export class InMemoryDb {
     }
 
     private byId(id: string) {
-        return (g: Saved<{}>) => g.id == id
+        return (g: Saved<{}>) => g.id === id
     }
 }
