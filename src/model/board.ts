@@ -12,6 +12,8 @@ import {
 } from './playerSymbol'
 import { GameResult } from './gameResult'
 
+export const emptyField = '_'
+
 export type FieldStatus = '_' | PlayerSymbol
 
 export type Line = [FieldStatus, FieldStatus, FieldStatus]
@@ -19,7 +21,7 @@ export type Line = [FieldStatus, FieldStatus, FieldStatus]
 export type Board = [Line, Line, Line]
 
 export const emptyBoard = (): Board => {
-    const makeRow = (): Line => ['_', '_', '_']
+    const makeRow = (): Line => [emptyField, emptyField, emptyField]
     return [makeRow(), makeRow(), makeRow()]
 }
 
@@ -47,7 +49,7 @@ export const getAllLines = (board: Board): Line[] => [
 ]
 
 export const getEmptyFields = (board: Board): BoardCoordinates[] =>
-    allBoardFields.filter(([x, y]) => board[y][x] === '_') //TODO: extract const for "_"
+    allBoardFields.filter(([x, y]) => board[y][x] === emptyField)
 
 export const getGameResultFromBoard = (board: Board): GameResult => {
     if (hasPlayerWon(board, firstPlayerSymbol)) {

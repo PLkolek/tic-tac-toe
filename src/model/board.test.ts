@@ -1,4 +1,4 @@
-import { emptyBoard, getBoard, getEmptyFields, getGameResultFromBoard } from './board'
+import { emptyBoard, emptyField, getBoard, getEmptyFields, getGameResultFromBoard } from './board'
 import { PlayerSymbol } from './playerSymbol'
 import { GameResult } from './gameResult'
 
@@ -14,9 +14,9 @@ describe('getBoard', () => {
                 [2, 2],
             ]),
         ).toEqual([
-            [PlayerSymbol.O, '_', '_'],
-            ['_', PlayerSymbol.X, '_'],
-            ['_', '_', PlayerSymbol.O],
+            [PlayerSymbol.O, emptyField, emptyField],
+            [emptyField, PlayerSymbol.X, emptyField],
+            [emptyField, emptyField, PlayerSymbol.O],
         ])
     })
 })
@@ -26,8 +26,8 @@ describe('getEmptyFields', () => {
         expect(
             getEmptyFields([
                 [PlayerSymbol.O, PlayerSymbol.O, PlayerSymbol.O],
-                ['_', PlayerSymbol.X, PlayerSymbol.X],
-                [PlayerSymbol.X, '_', PlayerSymbol.O],
+                [emptyField, PlayerSymbol.X, PlayerSymbol.X],
+                [PlayerSymbol.X, emptyField, PlayerSymbol.O],
             ]),
         ).toEqual([
             [0, 1],
@@ -44,9 +44,9 @@ describe('getGameResultFromBoard', () => {
         test('for some not winning moves', () => {
             expect(
                 getGameResultFromBoard([
-                    [PlayerSymbol.O, '_', '_'],
-                    ['_', PlayerSymbol.X, '_'],
-                    ['_', '_', PlayerSymbol.O],
+                    [PlayerSymbol.O, emptyField, emptyField],
+                    [emptyField, PlayerSymbol.X, emptyField],
+                    [emptyField, emptyField, PlayerSymbol.O],
                 ]),
             ).toBe(GameResult.InProgress)
         })
