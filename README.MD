@@ -8,7 +8,7 @@ TODO:
 * naming convention for resolver files
 * split model
 * prettier
-* resolve TODOs in code
+* resolve TODOs in code (search for //)
 * unit tests
 * logging
 * DI
@@ -18,6 +18,8 @@ TODO:
 * global vs scoped services
 * global vs scoped repositories (use static?)
 * token validity time?
+* private in constructors
+* add logging in repositories?
 
 Subscriptions are not authenticated
 Models are passed in pubsub

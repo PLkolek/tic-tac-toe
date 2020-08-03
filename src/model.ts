@@ -1,3 +1,5 @@
+import { omit } from "./utils";
+
 export type Saved<T> = T & { id: string }
 
 export type GameData = {
@@ -110,10 +112,7 @@ export type DbUser = UserData & {
     passwordHash: string
 }
 
-export const omitPasswordHash = <T extends DbUser>(dbUser: T): Omit<T, 'passwordHash'> => {
-    const { passwordHash, ...user } = dbUser;
-    return user
-};
+export const omitPasswordHash = <T extends DbUser>(dbUser: T): Omit<T, 'passwordHash'> => omit(dbUser, 'passwordHash')
 
 export const omitPasswordHashFromUsers = <T extends DbUser>(dbUsers: T[]): Omit<T, 'passwordHash'>[] =>
     dbUsers.map(omitPasswordHash);

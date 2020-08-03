@@ -2,7 +2,9 @@ import { AuthUser, DbUser, omitPasswordHash, Saved, UnsavedUser, UserData } from
 import * as bcrypt from "bcryptjs";
 import { UserRepository } from "../repositories/userRepository";
 import * as jwt from 'jsonwebtoken'
-import { Service } from "typedi";
+import { Inject, Service } from "typedi";
+import Logger from "bunyan";
+import { omit } from "../utils";
 
 type AuthResult = {
     user: Saved<UserData>
@@ -11,30 +13,38 @@ type AuthResult = {
 
 @Service()
 export class AuthService {
-    private userRepository: UserRepository;
-
-    constructor(userRepository: UserRepository) {
+    constructor(
+        private userRepository: UserRepository,
+        @Inject("unathenticatedLogger") private log: Logger) {
         this.userRepository = userRepository;
     }
 
     public async signUp(user: UnsavedUser): Promise<AuthResult> {
+        const log = this.log.child({ user: omit(user, 'password') })
+        log.info("Attempting to sign up")
         const passwordHash = await bcrypt.hash(user.password, 10) //TODO: salt
 
         const savedUser = this.userRepository.create({ email: user.email, passwordHash });
+        log.info("Sign up successful")
         return this.authResponse(savedUser);
     }
 
     public async login(email: string, password: string): Promise<AuthResult> {
+        const log = this.log.child({ email })
+        log.info("Attempting to log in")
         const user = this.userRepository.getByEmail(email)
         if (!user) {
+            log.info("No user with such email found")
             throw new Error(`No user found for email: ${email}`)
         }
 
         const valid = await bcrypt.compare(password, user.passwordHash)
         if (!valid) {
-            throw new Error('Invalid password') //Handle this error properly
+            log.info("Invalid password")
+            throw new Error('Invalid password') //TODO: Handle this error properly
         }
 
+        log.info("Log in successful")
         return this.authResponse(user);
     }
 

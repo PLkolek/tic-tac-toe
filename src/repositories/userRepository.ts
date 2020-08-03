@@ -7,6 +7,7 @@ export class UserRepository {
     private nextId: number = 1;
 
     public create(user: DbUser): Saved<DbUser> {
+        //TODO: email unique
         const savedUser = { ...user, id: String(this.nextId++) }
         this.users.push(savedUser);
         return savedUser;

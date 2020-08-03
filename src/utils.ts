@@ -24,3 +24,8 @@ export class AuthorizationError extends Error {
 export type GameOutput = {
     game: Saved<Game>
 }
+
+export const omit = <T, Property extends keyof T>(obj: T, property: Property): Omit<T, Property> => {
+    const { [property]: _, ...objWithoutProperty } = obj;
+    return objWithoutProperty
+};

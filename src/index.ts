@@ -17,10 +17,6 @@ Container.set({
 
 
 const rootLogger = bunyan.createLogger({ name: "tic-tac-toe" })
-Container.set({
-    type: Logger,
-    value: rootLogger
-})
 
 const server = new ApolloServer({
     typeDefs: schema,
@@ -32,6 +28,7 @@ const server = new ApolloServer({
 
         const requestId = uuidv4();
         const container = Container.of(requestId);
+        container.set('unathenticatedLogger', rootLogger.child(requestId));
 
         //if there is no request, it is a websocket connection (subscription) - no auth needed so far there
         const user = req ? container.get(AuthService).getLoggedInUserFromAuthHeader(req.header("Authorization")) : null;
