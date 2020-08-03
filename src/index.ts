@@ -46,8 +46,8 @@ const server = new ApolloServer({
 
         container.set({
             type: Logger,
-            value: rootLogger.child({ requestId, loggedInUserId: user?.userId }),
-        }) //TODO: email instead of id
+            value: rootLogger.child({ requestId, loggedInUserEmail: user?.email }),
+        })
 
         return {
             container,

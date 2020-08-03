@@ -49,6 +49,6 @@ export class AuthService {
     }
 
     private tokenForUser(user: Saved<UserData>): string {
-        return this.jwtService.sign({ userId: user.id })
+        return this.jwtService.sign({ email: user.email, sub: user.id })
     }
 }

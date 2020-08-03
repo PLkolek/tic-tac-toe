@@ -13,7 +13,8 @@ export type DbUser = UserData & {
 }
 
 export type AuthUser = {
-    userId: string
+    sub: string
+    email: string
 }
 
 export const omitPasswordHash = <T extends DbUser>(dbUser: T): Omit<T, 'passwordHash'> =>

@@ -17,18 +17,20 @@ import { BoardCoordinates } from '../model/boardCoordinates'
 import { Saved } from '../model/util'
 import { GameResult } from '../model/gameResult'
 import { SubscriptionService } from './subscriptionService'
+import { UserService } from './userService'
 
 @Service()
 export class GameService {
     constructor(
         private gameRepository: GameRepository,
+        private userService: UserService,
         private subscriptionService: SubscriptionService,
         @Inject('loggedInUser') private loggedInUser: AuthUser | null,
         private logger: Logger,
     ) {}
 
     public createGameByLoggedInUser(game: GameData): Promise<Saved<Game>> {
-        return this.createGameBy(game, this.getLoggedInUserOrFail().userId)
+        return this.createGameBy(game, this.getLoggedInUserOrFail().sub)
     }
 
     public createGameBy(game: GameData, userId: string): Promise<Saved<Game>> {
@@ -37,7 +39,7 @@ export class GameService {
     }
 
     public joinGameByIdByLoggedInUser(gameId: string): Promise<Saved<Game>> {
-        return this.joinGameById(gameId, this.getLoggedInUserOrFail().userId)
+        return this.joinGameById(gameId, this.getLoggedInUserOrFail().sub)
     }
 
     public async joinGameById(gameId: string, userId: string): Promise<Saved<Game>> {
@@ -58,7 +60,7 @@ export class GameService {
         gameId: string,
         coordinates: BoardCoordinates,
     ): Promise<Saved<Game>> {
-        return this.makeMoveInGameById(gameId, this.getLoggedInUserOrFail().userId, coordinates)
+        return this.makeMoveInGameById(gameId, this.getLoggedInUserOrFail().sub, coordinates)
     }
 
     public async makeMoveInGameById(

@@ -2,8 +2,6 @@ TODO:
 * check options in tsconfig.json
 * use graphql codegen?
 * proper error handling
-* resolve TODOs in code (search for //)
-* unit tests
 * organize Input and Output types
 * token validity time?
 
