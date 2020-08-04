@@ -1,8 +1,6 @@
 TODO:
 * check options in tsconfig.json
 * use graphql codegen?
-* proper error handling
-* organize Input and Output types
 * token validity time?
 
 Subscriptions are not authenticated

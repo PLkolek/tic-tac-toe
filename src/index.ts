@@ -2,12 +2,14 @@ import 'reflect-metadata'
 import { ApolloServer, PubSub } from 'apollo-server'
 import resolvers from './resolvers'
 import { Context } from './utils'
-import { schema } from './schema'
 import { Container } from 'typedi'
 import { v4 as uuidv4 } from 'uuid'
 import * as bunyan from 'bunyan'
 import Logger from 'bunyan'
 import { JwtService } from './services/jwtService'
+import { rootSchema } from './schema/root'
+import { authSchema } from './schema/auth'
+import { gameSchema } from './schema/game'
 
 Container.set({
     global: true,
@@ -31,7 +33,7 @@ Container.set({
 const rootLogger = bunyan.createLogger({ name: 'tic-tac-toe' })
 
 const server = new ApolloServer({
-    typeDefs: schema,
+    typeDefs: [rootSchema, authSchema, gameSchema],
     resolvers,
     context: ({ req }): Context => {
         const requestId = uuidv4()

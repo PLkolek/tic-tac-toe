@@ -1,20 +1,18 @@
 import { gql } from 'apollo-server'
 
-export const schema = gql`
-    type Query {
+export const gameSchema = gql`
+    extend type Query {
         games: [Game!]!
     }
 
-    type Mutation {
+    extend type Mutation {
         createGame(input: CreateGameInput!): GamePayload!
         joinGame(input: JoinGameInput!): GamePayload!
         makeMove(input: MakeMoveInput!): GamePayload!
-        signUp(input: SignUpInput!): AuthPayload!
-        login(input: LogInInput): AuthPayload!
     }
 
-    type Subscription {
-        gameEnded: GamePayload
+    extend type Subscription {
+        gameEnded: GamePayload!
     }
 
     input CreateGameInput {
@@ -75,33 +73,5 @@ export const schema = gql`
         PLAYER_2_WON
         DRAW
         IN_PROGRESS
-    }
-
-    input SignUpInput {
-        user: UserInput!
-    }
-
-    input UserInput {
-        email: String!
-        password: String!
-    }
-
-    input LogInInput {
-        passwordAuth: PasswordAuthInput!
-    }
-
-    input PasswordAuthInput {
-        email: String!
-        password: String!
-    }
-
-    type AuthPayload {
-        token: String
-        user: User
-    }
-
-    type User {
-        id: ID!
-        email: String!
     }
 `
