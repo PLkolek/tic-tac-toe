@@ -3,6 +3,7 @@ import { gql } from 'apollo-server'
 export const gameSchema = gql`
     extend type Query {
         games: [Game!]!
+        game(gameId: String!): Game
     }
 
     extend type Mutation {

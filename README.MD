@@ -105,4 +105,3 @@ resort to passing DI container in the context, and using it as a service locator
 
 TODO: 
 * test services?
-* endpoint for getting specific game
