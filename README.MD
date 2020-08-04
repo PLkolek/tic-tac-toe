@@ -1,5 +1,4 @@
 TODO:
-* check options in tsconfig.json
 * use graphql codegen?
 
 Subscriptions are not authenticated
