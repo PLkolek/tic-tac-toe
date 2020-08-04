@@ -4,6 +4,7 @@ Requirements:
 * node 12
 
 ```
+npm install
 npm start 
 ```
 
@@ -45,7 +46,7 @@ so I just picked whatever did its job, seemed simple to use and maintained:
            it ticked all the boxes and worked out of the box, nice
 * TypeDI - it had a nice README with basic examples, making it easy to figure out how to use,
            which I can't say about the more popular option I looked at - Inversify. Though I am not
-           if I'd trust TypeDI in a bigger, commercial project, judging by the issues on GitHub,
+           sure if I'd trust TypeDI in a bigger, commercial project, judging by the issues on GitHub,
            a bit lacking documentation and cases where it silently continued working even though 
            I set it up incorrectly.
 * Jest - I used before and had no problems with it, so no reason for change
