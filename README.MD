@@ -102,6 +102,9 @@ wrestling with it for some time. ApolloServer's constructor accepts resolvers as
 app startup, and to use DI, I needed them to be created on per request basis. Therefore I had to 
 resort to passing DI container in the context, and using it as a service locator in resolvers.
 
+#### Code formatting
+Prettier is set up in the project, together with Husky and lint-staged to automatically format code
+before commits
 
 TODO: 
 * test services?
