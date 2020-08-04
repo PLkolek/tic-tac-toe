@@ -25,6 +25,9 @@ export const addMove = <T extends Game>(game: T, coordinates: BoardCoordinates):
     moves: [...game.moves, coordinates],
 })
 
+// Validations should return some enum with ErrorType instead of just string cause,
+// but as it would require some boring boilerplate switches just to provide a message
+// to the log and to the exception, it's fine as it is for now.
 export const validateMove = (
     game: Game,
     userId: string,
