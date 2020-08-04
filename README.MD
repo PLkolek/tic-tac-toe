@@ -105,6 +105,3 @@ resort to passing DI container in the context, and using it as a service locator
 #### Code formatting
 Prettier is set up in the project, together with Husky and lint-staged to automatically format code
 before commits
-
-TODO: 
-* test services?
