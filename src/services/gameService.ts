@@ -17,7 +17,7 @@ import { Saved } from '../model/util'
 import { GameResult } from '../model/gameResult'
 import { SubscriptionService } from './subscriptionService'
 import { UserService } from './userService'
-import { AuthenticationError, UserInputError } from 'apollo-server'
+import { ForbiddenError, UserInputError } from 'apollo-server'
 
 @Service()
 export class GameService {
@@ -137,7 +137,7 @@ export class GameService {
     private getLoggedInUserOrFail(): AuthUser {
         if (!this.loggedInUser) {
             this.logger.info('User is not logged in')
-            throw new AuthenticationError('You have to be logged in to perform this operation')
+            throw new ForbiddenError('You have to be logged in to perform this operation')
         }
         return this.loggedInUser
     }
