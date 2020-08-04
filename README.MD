@@ -1,7 +1,6 @@
 TODO:
 * check options in tsconfig.json
 * use graphql codegen?
-* token validity time?
 
 Subscriptions are not authenticated
 Models are passed in pubsub

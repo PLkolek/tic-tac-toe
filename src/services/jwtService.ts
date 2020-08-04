@@ -7,7 +7,7 @@ export class JwtService {
     constructor(@Inject('appSecret') private appSecret: string) {}
 
     public sign(userData: AuthUser): string {
-        return jwt.sign(userData, this.appSecret)
+        return jwt.sign(userData, this.appSecret, { expiresIn: '1h' })
     }
 
     public getLoggedInUserFromToken(token: string): AuthUser {
